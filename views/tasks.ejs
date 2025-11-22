@@ -1,0 +1,58 @@
+<%- include("layout", {
+    user: user,
+    body: `
+    <div class="center-card" style="width: 90%; max-width: 900px; text-align:left;">
+
+        <h1 style="text-align:center;">Your Tasks</h1>
+
+        <% if (tasks.length === 0) { %>
+            <p style="text-align:center; margin-top:20px;">No tasks found. Add a new one!</p>
+        <% } else { %>
+
+        <table class="task-table">
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+
+            <% tasks.forEach(task => { %>
+                <tr>
+                    <td><%= task.title %></td>
+
+                    <td>
+                        <span class="status <%= task.status %>">
+                            <%= task.status.charAt(0).toUpperCase() + task.status.slice(1) %>
+                        </span>
+                    </td>
+
+                    <td><%= task.dueDate ? task.dueDate.toISOString().split("T")[0] : "—" %></td>
+
+                    <td>
+                        <a href="/tasks/edit/<%= task.id %>" class="btn-sm btn-edit">Edit</a>
+
+                        <a href="/tasks/delete/<%= task.id %>" class="btn-sm btn-delete"
+                           onclick="return confirm('Delete this task?');">
+                           Delete
+                        </a>
+
+                        <% if (task.status === 'pending') { %>
+                        <a href="/tasks/complete/<%= task.id %>" class="btn-sm btn-complete">
+                            Complete
+                        </a>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }) %>
+
+        </table>
+        <% } %>
+
+        <div style="text-align:center; margin-top:20px;">
+            <a href="/tasks/add" class="btn btn-purple">Add New Task</a>
+        </div>
+
+    </div>
+    `
+}) %>
