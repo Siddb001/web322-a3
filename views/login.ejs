@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 
@@ -17,13 +17,15 @@
     <p class="error"><%= error %></p>
 <% } %>
 
-<form action="/login" method="POST">
-    <input type="email" name="email" placeholder="Email">
-    <input type="password" name="password" placeholder="Password">
+<form method="POST" action="/login">
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
     <button type="submit">Login</button>
 </form>
 
-<footer>WEB322 Assignment 3 — Siddhant Bisht</footer>
+<footer>
+    WEB322 Assignment 3 — Siddhant Bisht
+</footer>
 
 </body>
 </html>

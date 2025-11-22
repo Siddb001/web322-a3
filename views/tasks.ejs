@@ -4,46 +4,42 @@
     <title>Your Tasks</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-    <%- include("partials/navbar") %>
 
-    <div class="container">
-        <h2>Your Tasks</h2>
+<div class="navbar">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/tasks">Tasks</a>
+    <a href="/logout">Logout</a>
+</div>
 
-        <a href="/tasks/add" class="btn">Add Task</a>
+<h2>Your Tasks</h2>
 
-        <table>
-            <tr>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
+<a href="/tasks/add" class="btn">Add New Task</a>
 
-            <% tasks.forEach(task => { %>
-                <tr>
-                    <td><%= task.title %></td>
-                    <td><%= task.complete ? "Completed" : "Pending" %></td>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
 
-                    <td>
-                        <a href="/tasks/edit/<%= task.id %>">Edit</a>
+    <% tasks.forEach(task => { %>
+        <tr>
+            <td><%= task.title %></td>
+            <td><%= task.description %></td>
+            <td><%= task.complete ? "Completed" : "Pending" %></td>
+            <td>
+                <a href="/tasks/edit/<%= task.id %>" class="btn">Edit</a>
+                <a href="/tasks/delete/<%= task.id %>" class="btn" style="background:#d63031;">Delete</a>
+            </td>
+        </tr>
+    <% }) %>
+</table>
 
-                        <form action="/tasks/delete/<%= task.id %>" method="POST" style="display:inline;">
-                            <button type="submit">Delete</button>
-                        </form>
+<footer>
+    WEB322 Assignment 3 — Siddhant Bisht
+</footer>
 
-                        <form action="/tasks/status/<%= task.id %>" method="POST" style="display:inline;">
-                            <select name="status" onchange="this.form.submit()">
-                                <option value="pending" <%= !task.complete ? "selected" : "" %>>Pending</option>
-                                <option value="completed" <%= task.complete ? "selected" : "" %>>Completed</option>
-                            </select>
-                        </form>
-                    </td>
-                </tr>
-            <% }) %>
-        </table>
-
-        <footer>WEB322 Assignment 3 — Siddhant Bisht</footer>
-    </div>
 </body>
 </html>

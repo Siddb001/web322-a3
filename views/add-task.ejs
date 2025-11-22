@@ -4,21 +4,25 @@
     <title>Add Task</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-    <%- include("partials/navbar") %>
 
-    <div class="container">
-        <h2>Add Task</h2>
+<div class="navbar">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/tasks">Tasks</a>
+    <a href="/logout">Logout</a>
+</div>
 
-        <form action="/tasks/add" method="POST">
-            <input type="text" name="title" placeholder="Task Title">
-            <textarea name="description" placeholder="Description"></textarea>
+<h2>Add New Task</h2>
 
-            <button type="submit">Add Task</button>
-        </form>
+<form method="POST" action="/tasks/add">
+    <input type="text" name="title" placeholder="Task Title" required>
+    <textarea name="description" placeholder="Task Description" required></textarea>
+    <button type="submit">Add Task</button>
+</form>
 
-        <footer>WEB322 Assignment 3 — Siddhant Bisht</footer>
-    </div>
+<footer>
+    WEB322 Assignment 3 — Siddhant Bisht
+</footer>
+
 </body>
 </html>
