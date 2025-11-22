@@ -1,23 +1,11 @@
 const { Sequelize, DataTypes } = require("sequelize");
-require("pg"); // Force Vercel to include the pg driver
 
-const sequelize = new Sequelize(
-    process.env.PG_DATABASE,
-    process.env.PG_USERNAME,
-    process.env.PG_PASSWORD,
-    {
-        host: process.env.PG_HOST,
-        dialect: "postgres",
-        port: process.env.PG_PORT,
-        logging: false,
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false
-            }
-        }
-    }
-);
+// Use SQLite for WEB322 Assignment
+const sequelize = new Sequelize({
+    dialect: "sqlite",
+    storage: "./database/tasks.db",
+    logging: false
+});
 
 const Task = sequelize.define("Task", {
     title: {
@@ -25,21 +13,13 @@ const Task = sequelize.define("Task", {
         allowNull: false
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
-    dueDate: {
-        type: DataTypes.DATE,
-        allowNull: true
-    },
-    status: {
-        type: DataTypes.STRING,
-        defaultValue: "pending"
-    },
-    userId: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    complete: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 });
 
-module.exports = { Task, sequelize };
+module.exports = { sequelize, Task };

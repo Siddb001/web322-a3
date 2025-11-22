@@ -38,11 +38,10 @@ async function connectDatabases() {
     }
 
     try {
-        await sequelize.authenticate();
-        await sequelize.sync();
-        console.log("✔ PostgreSQL connected");
+        await sequelize.sync();   // SQLite only
+        console.log("✔ SQLite synced");
     } catch (err) {
-        console.log("❌ PostgreSQL error:", err.message);
+        console.log("❌ SQLite error:", err.message);
     }
 }
 
