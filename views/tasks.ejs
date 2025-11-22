@@ -1,58 +1,37 @@
-<%- include("layout", {
-    user: user,
-    body: `
-    <div class="center-card" style="width: 90%; max-width: 900px; text-align:left;">
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
 
-        <h1 style="text-align:center;">Your Tasks</h1>
+<h2>Your Tasks</h2>
 
-        <% if (tasks.length === 0) { %>
-            <p style="text-align:center; margin-top:20px;">No tasks found. Add a new one!</p>
-        <% } else { %>
+<a href="/tasks/add" class="btn">Add Task</a>
 
-        <table class="task-table">
-            <tr>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Due Date</th>
-                <th>Actions</th>
-            </tr>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
 
-            <% tasks.forEach(task => { %>
-                <tr>
-                    <td><%= task.title %></td>
+    <% tasks.forEach(task => { %>
+    <tr>
+        <td><%= task.title %></td>
+        <td><%= task.status %></td>
+        <td>
+            <a href="/tasks/edit/<%= task.id %>">Edit</a>
 
-                    <td>
-                        <span class="status <%= task.status %>">
-                            <%= task.status.charAt(0).toUpperCase() + task.status.slice(1) %>
-                        </span>
-                    </td>
+            <form action="/tasks/delete/<%= task.id %>" method="POST" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
 
-                    <td><%= task.dueDate ? task.dueDate.toISOString().split("T")[0] : "—" %></td>
+            <form action="/tasks/status/<%= task.id %>" method="POST" style="display:inline;">
+                <select name="status" onchange="this.form.submit()">
+                    <option value="pending" <%= task.status==='pending'?'selected':'' %>>Pending</option>
+                    <option value="completed" <%= task.status==='completed'?'selected':'' %>>Completed</option>
+                </select>
+            </form>
+        </td>
+    </tr>
+    <% }) %>
+</table>
 
-                    <td>
-                        <a href="/tasks/edit/<%= task.id %>" class="btn-sm btn-edit">Edit</a>
-
-                        <a href="/tasks/delete/<%= task.id %>" class="btn-sm btn-delete"
-                           onclick="return confirm('Delete this task?');">
-                           Delete
-                        </a>
-
-                        <% if (task.status === 'pending') { %>
-                        <a href="/tasks/complete/<%= task.id %>" class="btn-sm btn-complete">
-                            Complete
-                        </a>
-                        <% } %>
-                    </td>
-                </tr>
-            <% }) %>
-
-        </table>
-        <% } %>
-
-        <div style="text-align:center; margin-top:20px;">
-            <a href="/tasks/add" class="btn btn-purple">Add New Task</a>
-        </div>
-
-    </div>
-    `
-}) %>
+<%- include("partials/footer") %>

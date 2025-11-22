@@ -1,71 +1,73 @@
 const express = require("express");
+const router = express.Router();
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
-const router = express.Router();
-
-// REGISTER PAGE
+// GET REGISTER PAGE
 router.get("/register", (req, res) => {
     res.render("register", { error: null });
 });
 
-// REGISTER POST
+// POST REGISTER USER
 router.post("/register", async (req, res) => {
     const { username, email, password } = req.body;
 
+    if (!username || !email || !password) {
+        return res.render("register", { error: "All fields are required" });
+    }
+
     try {
-        const exists = await User.findOne({ email });
+        let user = await User.findOne({ email });
+        if (user) {
+            return res.render("register", { error: "Email already exists" });
+        }
 
-        if (exists)
-            return res.render("register", { error: "Email already exists!" });
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const hashed = await bcrypt.hash(password, 10);
-
-        await User.create({
+        user = new User({
             username,
             email,
-            password: hashed
+            password: hashedPassword
         });
 
-        res.redirect("/login");
-
+        await user.save();
+        return res.redirect("/login");
     } catch (err) {
-        console.log(err);
-        res.render("register", { error: "Something went wrong!" });
+        console.error("REGISTER ERROR:", err);
+        return res.render("register", { error: "Registration failed" });
     }
 });
 
-// LOGIN PAGE
+// GET LOGIN PAGE
 router.get("/login", (req, res) => {
     res.render("login", { error: null });
 });
 
-// LOGIN POST
+// POST LOGIN
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     try {
         const user = await User.findOne({ email });
-
-        if (!user)
+        if (!user) {
             return res.render("login", { error: "Invalid email or password" });
+        }
 
-        const match = await bcrypt.compare(password, user.password);
-
-        if (!match)
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
             return res.render("login", { error: "Invalid email or password" });
+        }
 
         req.session.user = {
-            id: user._id,
+            id: user._id.toString(),
             username: user.username,
             email: user.email
         };
 
-        res.redirect("/dashboard");
-
+        return res.redirect("/dashboard");
     } catch (err) {
-        console.log(err);
-        res.render("login", { error: "Something went wrong!" });
+        console.error("LOGIN ERROR:", err);
+        return res.render("login", { error: "Login failed" });
     }
 });
 

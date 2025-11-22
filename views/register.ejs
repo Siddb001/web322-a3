@@ -1,27 +1,18 @@
-<%- include("layout", {
-    body: `
-    <div class='center-card'>
-        <h1>Create Account</h1>
-        <p>Create your account to start managing tasks.</p>
+<%- include("partials/header") %>
 
-        <% if (error) { %>
-            <p style="color:red;"><%= error %></p>
-        <% } %>
+<h2>Register</h2>
 
-        <form action="/register" method="POST" class="form-card-login">
-            <input type="text" name="name" placeholder="Full Name" required />
+<form action="/register" method="POST">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
 
-            <input type="email" name="email" placeholder="Email" required />
+    <% if(error){ %>
+        <p class="error"><%= error %></p>
+    <% } %>
 
-            <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Register</button>
+    <a href="/login">Already have an account?</a>
+</form>
 
-            <button class="btn btn-purple" style="width:100%;">Register</button>
-        </form>
-
-        <p style="margin-top:15px;">
-            Already have an account?
-            <a href="/login" style="color:#6d28d9;">Login</a>
-        </p>
-    </div>
-    `
-}) %>
+<%- include("partials/footer") %>

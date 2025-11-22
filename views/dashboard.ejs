@@ -1,21 +1,13 @@
-<%- include("layout", {
-    user: user,
-    body: `
-    <div class="center-card">
-        <h1>Welcome, <%= user.name %>!</h1>
-        <p>Your personal task dashboard.</p>
+<%- include("partials/header") %>
+<%- include("partials/navbar") %>
 
-        <div class="summary-box">
-            <h2>Task Summary</h2>
-            <p>Total Tasks: <strong><%= stats.total %></strong></p>
-            <p>Completed: <strong><%= stats.completed %></strong></p>
-            <p>Pending: <strong><%= stats.pending %></strong></p>
-        </div>
+<h2>Welcome, <%= user.username %>!</h2>
 
-        <div style="margin-top: 20px;">
-            <a href="/tasks" class="btn btn-blue">View Tasks</a>
-            <a href="/tasks/add" class="btn btn-purple">Add Task</a>
-        </div>
-    </div>
-    `
-}) %>
+<div class="stats">
+    <p>Total Tasks: <%= totalTasks %></p>
+    <p>Completed: <%= completedTasks %></p>
+</div>
+
+<a href="/tasks" class="btn">View All Tasks</a>
+
+<%- include("partials/footer") %>

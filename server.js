@@ -1,61 +1,64 @@
-/********************************************************************************
-* WEB322 – Assignment 03
-*
-* I declare that this assignment is my own work in accordance with Seneca's
-* Academic Integrity Policy:
-*
-* https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
-*
-* Name: _______SIDDHANT BISHT_______________ Student ID: ___190872234___________ Date: 25 NOV 2025______________
-*
-********************************************************************************/
 require("dotenv").config();
-
 const express = require("express");
-const path = require("path");
 const session = require("express-session");
-
-const { connectMongoDB, connectPostgres } = require("./models/index");
-
-const app = express();
-
-// Connect Databases
-connectMongoDB();
-connectPostgres();
-
-// View Engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-// Middleware
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.urlencoded({ extended: true }));
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "dev_secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 30 * 60 * 1000 }
-  })
-);
-
-// Routes
+const path = require("path");
+const mongoose = require("mongoose");
+const { sequelize } = require("./models/Task");
 const authRoutes = require("./routes/auth");
 const taskRoutes = require("./routes/tasks");
 
+const app = express();
+
+// ====== MIDDLEWARE ======
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
+
+// ====== SESSION CONFIG ======
+app.use(session({
+    secret: "sid_super_secret_key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 30 * 60 * 1000, // 30 minutes
+    }
+}));
+
+// ====== EJS SETUP ======
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// ====== DATABASE CONNECTIONS ======
+async function connectDatabases() {
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log("✔ MongoDB connected");
+    } catch (err) {
+        console.log("❌ MongoDB error:", err.message);
+    }
+
+    try {
+        await sequelize.authenticate();
+        await sequelize.sync();
+        console.log("✔ PostgreSQL connected");
+    } catch (err) {
+        console.log("❌ PostgreSQL error:", err.message);
+    }
+}
+
+connectDatabases();
+
+// ====== ROUTES ======
 app.use("/", authRoutes);
 app.use("/", taskRoutes);
 
-// Home
+// DEFAULT ROOT
 app.get("/", (req, res) => {
-  res.send("<h1>WEB322 Assignment 3</h1><p>Server is running.</p>");
+    res.redirect("/login");
 });
 
-// Sync Task model
-const Task = require("./models/Task");
-Task.sync();
-
-// Start Server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+// ====== START SERVER ======
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+});
